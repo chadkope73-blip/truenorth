@@ -1,26 +1,23 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
 
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>True North Field Tool</title>
+<title>Magnetic Declination & True North Calculator | In Tandem Toolworks</title>
 
-<meta name="description" content="Find magnetic declination and compass correction for field navigation, solar alignment, surveying, and drone operations.">
-
-<meta name="theme-color" content="#0f1416">
+<meta name="description" content="Free magnetic declination and true north calculator for compass correction, solar alignment, drone operations, and field navigation. Built by In Tandem Toolworks.">
 
 <link rel="icon" href="logo.png">
-
-<script defer src="/_vercel/insights/script.js"></script>
 
 <style>
 
 body{
-font-family:Arial,sans-serif;
+font-family:Arial, Helvetica, sans-serif;
 background:#0f1416;
-color:#e8e0c9;
+color:#e6dfc9;
 text-align:center;
 margin:0;
 padding:20px;
@@ -31,69 +28,55 @@ max-width:520px;
 margin:auto;
 background:#1b2224;
 padding:25px;
-border-radius:12px;
-box-shadow:0 5px 15px rgba(0,0,0,.4);
+border-radius:14px;
+box-shadow:0 6px 18px rgba(0,0,0,.45);
 }
 
 .logo{
-max-width:180px;
+width:180px;
 margin-bottom:20px;
 }
 
 h1{
 color:#c8a46b;
-margin-bottom:10px;
+margin-bottom:15px;
 }
 
 p{
-color:#cfc6ad;
+color:#d5cdb3;
 line-height:1.5;
-margin-bottom:20px;
-}
-
-input,button{
-width:100%;
-padding:12px;
-margin-top:10px;
-border-radius:8px;
-border:none;
-font-size:16px;
-box-sizing:border-box;
 }
 
 input{
-background:#101719;
-color:#e8e0c9;
-border:1px solid #4f5a5e;
+width:100%;
+padding:14px;
+margin-top:12px;
+background:#0e1315;
+border:1px solid #3a464b;
+border-radius:10px;
+color:white;
+font-size:16px;
 }
 
 button{
+width:100%;
+padding:14px;
+margin-top:15px;
 background:#c8a46b;
-color:#000;
+border:none;
+border-radius:10px;
+font-size:17px;
 font-weight:bold;
 cursor:pointer;
 }
 
-button:hover{
-background:#d9b983;
-}
-
 .result{
 margin-top:20px;
-padding:15px;
-background:#101719;
-border-radius:8px;
-border:1px solid #4f5a5e;
-display:none;
+padding:18px;
+background:#0e1315;
+border-radius:10px;
+border:1px solid #3a464b;
 text-align:left;
-line-height:1.6;
-}
-
-.result strong{
-display:block;
-margin-bottom:8px;
-font-size:18px;
-color:#c8a46b;
 }
 
 .tools{
@@ -102,54 +85,45 @@ margin-top:35px;
 
 .tool-btn{
 display:block;
-margin:8px auto;
-padding:10px;
-background:#101719;
-border:1px solid #4f5a5e;
-border-radius:8px;
-color:#e8e0c9;
+padding:14px;
+margin-top:10px;
+border:1px solid #3a464b;
+border-radius:10px;
+background:#0e1315;
+color:#e6dfc9;
 text-decoration:none;
 font-weight:bold;
-}
-
-.tool-btn:hover{
-background:#1e2a30;
 }
 
 .donate{
-margin-top:25px;
+margin-top:30px;
+padding:15px;
+border:1px solid #c8a46b;
+border-radius:12px;
 }
 
-.donate-btn{
-display:inline-flex;
+.donate a{
+display:flex;
 align-items:center;
+justify-content:center;
 gap:10px;
-padding:10px 16px;
-border:1px solid #c8a46b;
-border-radius:8px;
-background:#0e1a22;
-color:#c8a46b;
 text-decoration:none;
+color:#c8a46b;
 font-weight:bold;
 }
 
-.donate-btn img{
+.donate img{
 width:24px;
 height:24px;
 }
 
 .footer{
 margin-top:25px;
-font-size:14px;
 }
 
 .footer a{
 color:#c8a46b;
 text-decoration:none;
-}
-
-.footer a:hover{
-text-decoration:underline;
 }
 
 </style>
@@ -160,24 +134,25 @@ text-decoration:underline;
 
 <div class="container">
 
-<img src="logo.png" class="logo" alt="In Tandem Toolworks logo">
+<img src="logo.png" class="logo">
 
 <h1>True North Field Tool</h1>
 
 <p>
-Find magnetic declination and compass correction for field navigation, solar alignment, surveying, and drone operations.
+Find magnetic declination and compass correction for field navigation,
+solar alignment, surveying, and drone operations.
 </p>
 
 <input id="lat" placeholder="Latitude (Example: 39.7)">
 <input id="lon" placeholder="Longitude (Example: -104.9)">
 
-<button onclick="calc()">Calculate True North</button>
+<button onclick="calculate()">Calculate True North</button>
 
-<div id="result" class="result"></div>
+<div id="result" class="result" style="display:none;"></div>
 
 <div class="tools">
 
-<h3>More Field Tools</h3>
+<h2>More Field Tools</h2>
 
 <a class="tool-btn" href="https://ittworks.com">
 Solar Panel Direction Tool
@@ -197,33 +172,27 @@ Off-Grid Solar System Size
 
 <p>Enjoying the tools? Support development.</p>
 
-<a class="donate-btn" href="https://donate.stripe.com/4gM3cv0kV4UJbzPfeDeAg00" target="_blank">
+<a href="https://donate.stripe.com/4gM3cv0kV4UJbzPfeDeAg00" target="_blank">
 
-<img src="logo.png" alt="In Tandem Toolworks icon">
+<img src="ittw-donate.png">
 
 Support InTandem Toolworks
 
 </a>
 
-<p style="font-size:13px;opacity:.7;">Thank you for the donation.</p>
-
 </div>
 
 <div class="footer">
 
-Built by <b>In Tandem Toolworks</b>
+<p><strong>Built by In Tandem Toolworks</strong></p>
 
-<br><br>
+<p>
+<a href="mailto:support@ittworks.com">support@ittworks.com</a>
+</p>
 
-<a href="mailto:support@ittworks.com">
-support@ittworks.com
-</a>
-
-<br><br>
-
-<a href="https://www.facebook.com/InTandemToolworks">
-Follow on Facebook
-</a>
+<p>
+<a href="https://facebook.com/InTandemToolworks">Follow on Facebook</a>
+</p>
 
 </div>
 
@@ -231,7 +200,7 @@ Follow on Facebook
 
 <script>
 
-function calc(){
+function calculate(){
 
 let lat=parseFloat(document.getElementById("lat").value);
 
@@ -239,13 +208,11 @@ let result=document.getElementById("result");
 
 if(isNaN(lat)){
 result.style.display="block";
-result.innerHTML="<strong>Please enter a valid latitude.</strong>";
+result.innerHTML="Please enter a valid latitude.";
 return;
 }
 
-/* simplified declination estimate */
-
-let declination=7 + (lat-35)*0.12;
+let declination=(7 + (lat-35)*0.12);
 
 let direction=declination>0 ? "East" : "West";
 
@@ -255,27 +222,21 @@ result.style.display="block";
 
 result.innerHTML=
 
-"<strong>Magnetic Declination</strong>" +
+"<h3 style='color:#c8a46b;'>Magnetic Declination</h3>" +
 
-"<br><br>" +
+"<p style='font-size:22px;'>"+correction+"° "+direction+"</p>" +
 
-correction + "° " + direction +
+"<h3>Compass Correction</h3>" +
 
-"<br><br>" +
+"<p>"+
 
-"<b>Compass Correction</b>" +
+(direction==="East" ? "Subtract ":"Add ")+
+correction+
+"° from compass heading to find True North."+
 
-"<br>" +
+"</p>"+
 
-(direction=="East" ? "Subtract ":"Add ") +
-
-correction +
-
-"° from compass heading to find True North." +
-
-"<br><br>" +
-
-"<b>Tip:</b> Solar panels and maps use True North, while a compass points to Magnetic North.";
+"<p><strong>Tip:</strong> Solar panels and maps use True North, while a compass points to Magnetic North.</p>";
 
 }
 
