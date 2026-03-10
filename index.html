@@ -7,7 +7,7 @@
 
 <title>True North Field Tool</title>
 
-<meta name="description" content="Find magnetic declination and compass correction for field navigation, solar alignment, surveying, and drone work.">
+<meta name="description" content="Find magnetic declination and compass correction for field navigation, solar alignment, surveying, and drone operations.">
 
 <meta name="theme-color" content="#0f1416">
 
@@ -42,11 +42,13 @@ margin-bottom:20px;
 
 h1{
 color:#c8a46b;
+margin-bottom:10px;
 }
 
 p{
 color:#cfc6ad;
 line-height:1.5;
+margin-bottom:20px;
 }
 
 input,button{
@@ -56,6 +58,7 @@ margin-top:10px;
 border-radius:8px;
 border:none;
 font-size:16px;
+box-sizing:border-box;
 }
 
 input{
@@ -83,6 +86,14 @@ border-radius:8px;
 border:1px solid #4f5a5e;
 display:none;
 text-align:left;
+line-height:1.6;
+}
+
+.result strong{
+display:block;
+margin-bottom:8px;
+font-size:18px;
+color:#c8a46b;
 }
 
 .tools{
@@ -99,6 +110,10 @@ border-radius:8px;
 color:#e8e0c9;
 text-decoration:none;
 font-weight:bold;
+}
+
+.tool-btn:hover{
+background:#1e2a30;
 }
 
 .donate{
@@ -120,6 +135,7 @@ font-weight:bold;
 
 .donate-btn img{
 width:24px;
+height:24px;
 }
 
 .footer{
@@ -132,6 +148,10 @@ color:#c8a46b;
 text-decoration:none;
 }
 
+.footer a:hover{
+text-decoration:underline;
+}
+
 </style>
 
 </head>
@@ -140,7 +160,7 @@ text-decoration:none;
 
 <div class="container">
 
-<img src="logo.png" class="logo">
+<img src="logo.png" class="logo" alt="In Tandem Toolworks logo">
 
 <h1>True North Field Tool</h1>
 
@@ -179,11 +199,13 @@ Off-Grid Solar System Size
 
 <a class="donate-btn" href="https://donate.stripe.com/4gM3cv0kV4UJbzPfeDeAg00" target="_blank">
 
-<img src="ittw-donate.png">
+<img src="logo.png" alt="In Tandem Toolworks icon">
 
 Support InTandem Toolworks
 
 </a>
+
+<p style="font-size:13px;opacity:.7;">Thank you for the donation.</p>
 
 </div>
 
@@ -221,7 +243,7 @@ result.innerHTML="<strong>Please enter a valid latitude.</strong>";
 return;
 }
 
-/* simplified declination estimate for North America */
+/* simplified declination estimate */
 
 let declination=7 + (lat-35)*0.12;
 
