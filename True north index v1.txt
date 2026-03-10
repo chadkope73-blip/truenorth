@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>True North Field Tool</title>
+
+<meta name="description" content="Find magnetic declination and compass correction for field navigation, solar alignment, surveying, and drone work.">
+
+<meta name="theme-color" content="#0f1416">
+
+<link rel="icon" href="logo.png">
+
+<script defer src="/_vercel/insights/script.js"></script>
+
+<style>
+
+body{
+font-family:Arial,sans-serif;
+background:#0f1416;
+color:#e8e0c9;
+text-align:center;
+margin:0;
+padding:20px;
+}
+
+.container{
+max-width:520px;
+margin:auto;
+background:#1b2224;
+padding:25px;
+border-radius:12px;
+box-shadow:0 5px 15px rgba(0,0,0,.4);
+}
+
+.logo{
+max-width:180px;
+margin-bottom:20px;
+}
+
+h1{
+color:#c8a46b;
+}
+
+p{
+color:#cfc6ad;
+line-height:1.5;
+}
+
+input,button{
+width:100%;
+padding:12px;
+margin-top:10px;
+border-radius:8px;
+border:none;
+font-size:16px;
+}
+
+input{
+background:#101719;
+color:#e8e0c9;
+border:1px solid #4f5a5e;
+}
+
+button{
+background:#c8a46b;
+color:#000;
+font-weight:bold;
+cursor:pointer;
+}
+
+button:hover{
+background:#d9b983;
+}
+
+.result{
+margin-top:20px;
+padding:15px;
+background:#101719;
+border-radius:8px;
+border:1px solid #4f5a5e;
+display:none;
+text-align:left;
+}
+
+.tools{
+margin-top:35px;
+}
+
+.tool-btn{
+display:block;
+margin:8px auto;
+padding:10px;
+background:#101719;
+border:1px solid #4f5a5e;
+border-radius:8px;
+color:#e8e0c9;
+text-decoration:none;
+font-weight:bold;
+}
+
+.donate{
+margin-top:25px;
+}
+
+.donate-btn{
+display:inline-flex;
+align-items:center;
+gap:10px;
+padding:10px 16px;
+border:1px solid #c8a46b;
+border-radius:8px;
+background:#0e1a22;
+color:#c8a46b;
+text-decoration:none;
+font-weight:bold;
+}
+
+.donate-btn img{
+width:24px;
+}
+
+.footer{
+margin-top:25px;
+font-size:14px;
+}
+
+.footer a{
+color:#c8a46b;
+text-decoration:none;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div class="container">
+
+<img src="logo.png" class="logo">
+
+<h1>True North Field Tool</h1>
+
+<p>
+Find magnetic declination and compass correction for field navigation, solar alignment, surveying, and drone operations.
+</p>
+
+<input id="lat" placeholder="Latitude (Example: 39.7)">
+<input id="lon" placeholder="Longitude (Example: -104.9)">
+
+<button onclick="calc()">Calculate True North</button>
+
+<div id="result" class="result"></div>
+
+<div class="tools">
+
+<h3>More Field Tools</h3>
+
+<a class="tool-btn" href="https://ittworks.com">
+Solar Panel Direction Tool
+</a>
+
+<a class="tool-btn" href="https://production.ittworks.com">
+Solar Production Calculator
+</a>
+
+<a class="tool-btn" href="https://offgrid.ittworks.com">
+Off-Grid Solar System Size
+</a>
+
+</div>
+
+<div class="donate">
+
+<p>Enjoying the tools? Support development.</p>
+
+<a class="donate-btn" href="https://donate.stripe.com/4gM3cv0kV4UJbzPfeDeAg00" target="_blank">
+
+<img src="ittw-donate.png">
+
+Support InTandem Toolworks
+
+</a>
+
+</div>
+
+<div class="footer">
+
+Built by <b>In Tandem Toolworks</b>
+
+<br><br>
+
+<a href="mailto:support@ittworks.com">
+support@ittworks.com
+</a>
+
+<br><br>
+
+<a href="https://www.facebook.com/InTandemToolworks">
+Follow on Facebook
+</a>
+
+</div>
+
+</div>
+
+<script>
+
+function calc(){
+
+let lat=parseFloat(document.getElementById("lat").value);
+
+let result=document.getElementById("result");
+
+if(isNaN(lat)){
+result.style.display="block";
+result.innerHTML="<strong>Please enter a valid latitude.</strong>";
+return;
+}
+
+/* simplified declination estimate for North America */
+
+let declination=7 + (lat-35)*0.12;
+
+let direction=declination>0 ? "East" : "West";
+
+let correction=Math.abs(declination).toFixed(1);
+
+result.style.display="block";
+
+result.innerHTML=
+
+"<strong>Magnetic Declination</strong>" +
+
+"<br><br>" +
+
+correction + "° " + direction +
+
+"<br><br>" +
+
+"<b>Compass Correction</b>" +
+
+"<br>" +
+
+(direction=="East" ? "Subtract ":"Add ") +
+
+correction +
+
+"° from compass heading to find True North." +
+
+"<br><br>" +
+
+"<b>Tip:</b> Solar panels and maps use True North, while a compass points to Magnetic North.";
+
+}
+
+</script>
+
+</body>
+</html>
