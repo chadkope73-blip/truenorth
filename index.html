@@ -7,57 +7,84 @@
 <title>True North | Cellular Reception Estimator</title>
 
 <style>
+:root{
+  --bg1:#0b1220;
+  --bg2:#13233f;
+  --card:#142033cc;
+  --line:#2a3d63;
+  --text:#e8eefc;
+  --muted:#a9b7d3;
+  --accent:#8dd3ff;
+  --accent2:#ffd98a;
+  --good:#65d98f;
+  --maybe:#ffd166;
+  --bad:#ff8a80;
+  --purple:#c7b0ff;
+}
+*{box-sizing:border-box}
 body{
-font-family: system-ui, sans-serif;
-background:#0f172a;
-color:#e2e8f0;
-margin:0;
-padding:20px;
-text-align:center;
+  font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+  background:linear-gradient(180deg,var(--bg2),var(--bg1));
+  color:var(--text);
+  margin:0;
+  min-height:100vh;
+  padding:20px;
 }
-
-.container{
-max-width:520px;
-margin:auto;
+.container{max-width:760px;margin:0 auto;}
+.hero{
+  position:relative;
+  overflow:hidden;
+  border:1px solid var(--line);
+  border-radius:28px;
+  padding:22px;
+  margin-bottom:18px;
+  background:
+    radial-gradient(circle at top right, rgba(141,211,255,.18), transparent 28%),
+    linear-gradient(180deg, rgba(255,217,138,.08), rgba(255,255,255,.02));
+  box-shadow:0 20px 60px rgba(0,0,0,.28);
 }
-
-h1{
-font-size:2rem;
-margin-bottom:10px;
+.topo{
+  position:absolute;
+  inset:auto -10% -8% -10%;
+  height:120px;
+  opacity:.28;
+  background:
+    repeating-radial-gradient(circle at 20% 120%, transparent 0 14px, #8dd3ff 15px 16px, transparent 17px 29px),
+    repeating-radial-gradient(circle at 70% 130%, transparent 0 18px, #ffd98a 19px 20px, transparent 21px 38px),
+    repeating-radial-gradient(circle at 40% 120%, transparent 0 22px, #c7b0ff 23px 24px, transparent 25px 46px);
 }
-
-p{
-color:#94a3b8;
+.brand{display:flex;align-items:center;gap:14px;position:relative;z-index:1}
+.logo{width:56px;height:56px;flex:0 0 56px}
+.logo svg{width:100%;height:100%;display:block}
+.eyebrow{display:inline-flex;align-items:center;gap:8px;font-size:.84rem;color:var(--accent2);letter-spacing:.03em;text-transform:uppercase}
+h1{margin:4px 0 6px;font-size:2rem;line-height:1.05}
+.subtitle{margin:0;color:var(--muted);max-width:44rem}
+.card{
+  background:var(--card);
+  backdrop-filter:blur(8px);
+  border:1px solid var(--line);
+  border-radius:24px;
+  padding:18px;
+  box-shadow:0 16px 40px rgba(0,0,0,.2);
 }
-
-input, select, button{
-width:100%;
-padding:12px;
-margin-top:10px;
-border-radius:8px;
-border:none;
-font-size:1rem;
-}
-
-button{
-background:#38bdf8;
-color:black;
-font-weight:bold;
-cursor:pointer;
-}
-
-.result{
-margin-top:20px;
-padding:15px;
-background:#1e293b;
-border-radius:10px;
-}
-
-.good{color:#22c55e;}
-.maybe{color:#facc15;}
-.bad{color:#ef4444;}
-
-small{color:#64748b}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.full{grid-column:1 / -1}
+label{display:block;font-size:.9rem;color:var(--muted);margin:0 0 6px;text-align:left}
+input, select, button{width:100%;padding:13px 14px;border-radius:14px;border:1px solid var(--line);font-size:1rem}
+input,select{background:#0d1727;color:var(--text)}
+button{background:linear-gradient(180deg,var(--accent),#67b8f6);color:#07111f;font-weight:700;cursor:pointer;border:none;box-shadow:0 10px 24px rgba(103,184,246,.22)}
+button.secondary{background:linear-gradient(180deg,#ffe7b2,#ffd98a);box-shadow:0 10px 24px rgba(255,217,138,.16)}
+.result{margin-top:18px;padding:18px;background:linear-gradient(180deg, rgba(255,255,255,.04), rgba(255,255,255,.02));border:1px solid var(--line);border-radius:20px;text-align:left}
+.kpis{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-top:12px}
+.kpi{border:1px solid var(--line);border-radius:16px;padding:12px;background:#0d1727}
+.kpi .label{font-size:.82rem;color:var(--muted);margin-bottom:4px}
+.kpi .value{font-size:1.05rem;font-weight:700}
+.good{color:var(--good);font-weight:800}
+.maybe{color:var(--maybe);font-weight:800}
+.bad{color:var(--bad);font-weight:800}
+.small{color:var(--muted);font-size:.88rem;line-height:1.45}
+.footer-note{margin-top:14px;color:var(--muted);font-size:.86rem}
+@media (max-width:640px){.grid,.kpis{grid-template-columns:1fr} h1{font-size:1.75rem}}
 </style>
 </head>
 
@@ -65,38 +92,70 @@ small{color:#64748b}
 
 <div class="container">
 
-<h1>True North</h1>
+<section class="hero">
+  <div class="brand">
+    <div class="logo">
+      <img src="/logo.png" alt="InTandem ToolWorks logo" style="width:100%;height:100%;object-fit:contain;"/>
+    </div>
+    <div>
+      <div class="eyebrow">InTandem ToolWorks</div>
+      <h1>True North</h1>
+      <p class="subtitle">A location-based cellular data reception estimation tool for trip planning.</p>
+    </div>
+  </div>
+  <div class="topo"></div>
+</section>
 
-<p>
-A location-based cellular data reception estimation tool for trip planning.
-</p>
+<section class="card">
+  <div class="grid">
+    <div>
+      <label for="zip">ZIP code</label>
+      <input id="zip" placeholder="Colorado priority areas">
+    </div>
 
-<input id="zip" placeholder="ZIP code (Colorado priority areas)">
+    <div>
+      <label for="carrier">Established carrier</label>
+      <select id="carrier">
+        <option value="verizon">Verizon</option>
+        <option value="att">AT&amp;T</option>
+        <option value="tmobile">T-Mobile</option>
+      </select>
+    </div>
 
-<input id="lat" placeholder="Latitude (optional)">
-<input id="lon" placeholder="Longitude (optional)">
+    <div>
+      <label for="lat">Latitude</label>
+      <input id="lat" placeholder="Optional">
+    </div>
+    <div>
+      <label for="lon">Longitude</label>
+      <input id="lon" placeholder="Optional">
+    </div>
 
-<select id="carrier">
-<option value="verizon">Verizon</option>
-<option value="att">AT&T</option>
-<option value="tmobile">T-Mobile</option>
-</select>
+    <div class="full">
+      <label for="terrain">Terrain</label>
+      <select id="terrain">
+        <option value="flat">Flat terrain</option>
+        <option value="rolling">Rolling hills</option>
+        <option value="forest">Forest</option>
+        <option value="mountain">Mountain</option>
+        <option value="canyon">Canyon</option>
+      </select>
+    </div>
 
-<select id="terrain">
-<option value="flat">Flat terrain</option>
-<option value="rolling">Rolling hills</option>
-<option value="forest">Forest</option>
-<option value="mountain">Mountain</option>
-<option value="canyon">Canyon</option>
-</select>
+    <div>
+      <button onclick="estimate()">Estimate Signal</button>
+    </div>
+    <div>
+      <button class="secondary" onclick="getLocation()">Use My Location</button>
+    </div>
+  </div>
 
-<button onclick="estimate()">Estimate Signal</button>
+  <div id="output" class="result">
+    <div class="small">Enter ZIP or coordinates. Estimates are for established carriers and designed for Colorado field trip planning across the Front Range, I-70 corridor, mountain towns, and Western Slope.</div>
+  </div>
 
-<button onclick="getLocation()">Use My Location</button>
-
-<div id="output" class="result"></div>
-
-<small>Enter ZIP or coordinates. Estimates are for established carriers and designed for Colorado field trip planning across the Front Range, I-70 corridor, mountain towns, and Western Slope.</small>
+  <div class="footer-note">Built for fast field planning. Estimates are approximate and work best as a pre-trip guide.</div>
+</section>
 
 </div>
 
@@ -335,14 +394,17 @@ color="maybe";
 
 const carrierName = carrier === "att" ? "AT&T" : carrier === "tmobile" ? "T-Mobile" : "Verizon";
 
-output.innerHTML=
-`
-Carrier: ${carrierName}<br>
-Nearest tower distance: ${best.distance.toFixed(1)} miles<br>
-Estimated usable range: ${effective.toFixed(1)} miles<br><br>
-Signal estimate:
-<span class="${color}">${status}</span><br><br>
-<small>Estimate is based on sample data for established carriers and simplified terrain assumptions.</small>
+const terrainPenaltyValue = terrainPenalty(terrain);
+
+output.innerHTML = `
+<div class="small">Carrier: <strong>${carrierName}</strong></div>
+<div class="kpis">
+  <div class="kpi"><div class="label">Nearest tower distance</div><div class="value">${best.distance.toFixed(1)} miles</div></div>
+  <div class="kpi"><div class="label">Estimated usable range</div><div class="value">${effective.toFixed(1)} miles</div></div>
+  <div class="kpi"><div class="label">Terrain adjustment</div><div class="value">−${terrainPenaltyValue.toFixed(1)} miles</div></div>
+  <div class="kpi"><div class="label">Signal estimate</div><div class="value"><span class="${color}">${status}</span></div></div>
+</div>
+<div class="footer-note">Estimate is based on sample data for established carriers and simplified terrain assumptions.</div>
 `;
 
 }
