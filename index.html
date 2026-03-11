@@ -5,16 +5,13 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <title>True North | Cellular Reception Estimator</title>
-
 <meta name="description" content="Estimate cellular reception before traveling using ZIP code, coordinates, and terrain conditions.">
 <meta name="theme-color" content="#0f1416">
 
 <link rel="icon" href="logo.png">
-
 <script defer src="/_vercel/insights/script.js"></script>
 
 <style>
-
 :root{
 --bg1:#0b1220;
 --bg2:#13233f;
@@ -30,9 +27,7 @@
 --panel:#0d1727;
 }
 
-*{
-box-sizing:border-box;
-}
+*{box-sizing:border-box;}
 
 body{
 font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
@@ -65,43 +60,91 @@ text-decoration:none;
 font-weight:600;
 border:1px solid rgba(255,255,255,.15);
 box-shadow:0 6px 16px rgba(0,0,0,.35);
+display:inline-block;
+}
+
+.navgenie-link a:hover{
+filter:brightness(1.05);
 }
 
 .container{
-max-width:720px;
+max-width:900px;
 margin:auto;
+}
+
+.hero{
 background:var(--card);
 padding:25px;
 border-radius:24px;
 border:1px solid var(--line);
 backdrop-filter:blur(8px);
 box-shadow:0 16px 40px rgba(0,0,0,.25);
+margin-bottom:20px;
 }
 
 .logo{
 max-width:180px;
 margin-bottom:20px;
+filter:drop-shadow(0 6px 10px rgba(0,0,0,.35));
+}
+
+.eyebrow{
+font-size:.85rem;
+color:var(--accent2);
+text-transform:uppercase;
+letter-spacing:.05em;
+margin-bottom:8px;
+font-weight:700;
 }
 
 h1{
 color:var(--accent2);
-margin-bottom:10px;
+margin:0 0 10px;
+font-size:2rem;
 }
 
-p{
+.subtitle{
 color:var(--muted);
 line-height:1.5;
-margin-bottom:20px;
+margin:0 auto 20px;
+max-width:680px;
+}
+
+.card{
+background:var(--card);
+border:1px solid var(--line);
+border-radius:24px;
+padding:20px;
+backdrop-filter:blur(8px);
+box-shadow:0 16px 40px rgba(0,0,0,.18);
+text-align:left;
+}
+
+.grid{
+display:grid;
+grid-template-columns:1fr 1fr;
+gap:12px;
+}
+
+.full{
+grid-column:1 / -1;
+}
+
+label{
+display:block;
+font-size:.9rem;
+color:var(--muted);
+margin:0 0 6px;
+text-align:left;
 }
 
 input,select,button{
 width:100%;
-padding:12px;
-margin-top:10px;
+padding:13px 14px;
 border-radius:14px;
-border:none;
-font-size:16px;
+font-size:1rem;
 box-sizing:border-box;
+transition:transform .15s ease, filter .15s ease, box-shadow .15s ease;
 }
 
 input,select{
@@ -113,55 +156,80 @@ border:1px solid var(--line);
 button{
 background:linear-gradient(180deg,var(--accent),#67b8f6);
 color:#07111f;
-font-weight:bold;
+font-weight:700;
 cursor:pointer;
+border:none;
+box-shadow:0 10px 24px rgba(103,184,246,.22);
+}
+
+button:hover{
+filter:brightness(1.05);
+transform:scale(1.01);
 }
 
 button.secondary{
 background:linear-gradient(180deg,#ffe7b2,#ffd98a);
+box-shadow:0 10px 24px rgba(255,217,138,.16);
 }
 
 .result{
-margin-top:20px;
-padding:15px;
+margin-top:18px;
+padding:18px;
 background:var(--panel);
-border-radius:14px;
 border:1px solid var(--line);
-display:none;
+border-radius:20px;
 text-align:left;
+line-height:1.6;
+color:var(--text);
 }
 
 .kpis{
 display:grid;
-grid-template-columns:1fr 1fr;
+grid-template-columns:repeat(2,1fr);
 gap:10px;
-margin-top:10px;
+margin-top:12px;
 }
 
 .kpi{
-background:#101a2c;
-padding:10px;
-border-radius:12px;
 border:1px solid var(--line);
+border-radius:16px;
+padding:12px;
+background:#101a2c;
 }
 
-.good{color:var(--good);}
-.maybe{color:var(--maybe);}
-.bad{color:var(--bad);}
-
-.footer{
-margin-top:25px;
-font-size:14px;
+.kpi .label{
+font-size:.82rem;
 color:var(--muted);
+margin-bottom:4px;
 }
 
-.footer a{
-color:var(--accent2);
-text-decoration:none;
+.kpi .value{
+font-size:1.05rem;
+font-weight:700;
+color:var(--text);
+}
+
+.good{color:var(--good);font-weight:800;}
+.maybe{color:var(--maybe);font-weight:800;}
+.bad{color:var(--bad);font-weight:800;}
+
+.small{
+color:var(--muted);
+font-size:.88rem;
+line-height:1.45;
+}
+
+.footer-note{
+margin-top:14px;
+color:var(--muted);
+font-size:.86rem;
+line-height:1.45;
+text-align:left;
 }
 
 .donate{
 margin-top:25px;
+text-align:center;
 }
 
 .donate-btn{
@@ -182,6 +250,47 @@ width:24px;
 height:24px;
 }
 
+.footer-nav{
+text-align:center;
+margin-top:30px;
+}
+
+.footer-nav a{
+display:inline-block;
+background:#0f1b2e;
+color:#f2d8a7;
+padding:10px 16px;
+border-radius:10px;
+text-decoration:none;
+font-weight:600;
+border:1px solid rgba(255,255,255,.15);
+box-shadow:0 6px 16px rgba(0,0,0,.35);
+}
+
+.footer-nav a:hover{
+filter:brightness(1.05);
+}
+
+.footer{
+margin-top:25px;
+font-size:14px;
+color:var(--muted);
+text-align:center;
+}
+
+.footer a{
+color:var(--accent2);
+text-decoration:none;
+}
+
+.footer a:hover{
+text-decoration:underline;
+}
+
+@media (max-width:640px){
+.grid,.kpis{grid-template-columns:1fr;}
+h1{font-size:1.75rem;}
+}
 </style>
 </head>
 
@@ -193,25 +302,42 @@ height:24px;
 
 <div class="container">
 
-<img src="logo.png" class="logo">
-
+<div class="hero">
+<img src="logo.png" class="logo" alt="In Tandem Toolworks logo">
+<div class="eyebrow">InTandem Toolworks</div>
 <h1>True North</h1>
+<p class="subtitle">A location-based cellular data reception estimation tool for trip planning.</p>
+</div>
 
-<p>
-Estimate cellular signal strength before traveling using location, carrier, and terrain.
-</p>
+<div class="card">
 
-<input id="zip" placeholder="ZIP Code">
+<div class="grid">
+<div>
+<label for="zip">ZIP code</label>
+<input id="zip" placeholder="Colorado priority areas">
+</div>
 
+<div>
+<label for="carrier">Established carrier</label>
 <select id="carrier">
 <option value="verizon">Verizon</option>
-<option value="att">AT&T</option>
+<option value="att">AT&amp;T</option>
 <option value="tmobile">T-Mobile</option>
 </select>
+</div>
 
-<input id="lat" placeholder="Latitude (optional)">
-<input id="lon" placeholder="Longitude (optional)">
+<div>
+<label for="lat">Latitude</label>
+<input id="lat" placeholder="Optional">
+</div>
 
+<div>
+<label for="lon">Longitude</label>
+<input id="lon" placeholder="Optional">
+</div>
+
+<div class="full">
+<label for="terrain">Terrain</label>
 <select id="terrain">
 <option value="flat">Flat terrain</option>
 <option value="rolling">Rolling hills</option>
@@ -219,134 +345,263 @@ Estimate cellular signal strength before traveling using location, carrier, and 
 <option value="mountain">Mountain</option>
 <option value="canyon">Canyon</option>
 </select>
+</div>
 
+<div>
 <button onclick="estimate()">Estimate Signal</button>
-<button class="secondary" onclick="getLocation()">Use My Location</button>
+</div>
 
-<div id="result" class="result"></div>
+<div>
+<button class="secondary" onclick="getLocation()">Use My Location</button>
+</div>
+</div>
+
+<div id="output" class="result">
+<div class="small">Enter ZIP or coordinates. Estimates are for established carriers and designed for Colorado field trip planning across the Front Range, I-70 corridor, mountain towns, and Western Slope.</div>
+</div>
+
+<div class="footer-note">Built for fast field planning. Estimates are approximate and work best as a pre-trip guide.</div>
 
 <div class="donate">
-
 <p>Enjoying the tools? Support development.</p>
-
 <a class="donate-btn" href="https://donate.stripe.com/4gM3cv0kV4UJbzPfeDeAg00" target="_blank">
-<img src="ittw-donate.png">
+<img src="ittw-donate.png" alt="Donation icon">
 Support InTandem Toolworks
 </a>
+<p style="font-size:13px;opacity:.7;">Thank you for the donation.</p>
+</div>
 
+<div class="footer-nav">
+<a href="https://navgenie.ittworks.com">Return to Toolbelt</a>
 </div>
 
 <div class="footer">
-
 Built by <b>In Tandem Toolworks</b>
-
 <br><br>
-
-<a href="mailto:support@ittworks.com">
-support@ittworks.com
-</a>
-
+<a href="mailto:support@ittworks.com">support@ittworks.com</a>
 <br><br>
-
-<a href="https://www.facebook.com/InTandemToolworks">
-Follow us on Facebook
-</a>
-
+<a href="https://www.facebook.com/InTandemToolworks" target="_blank">Follow us on Facebook</a>
 </div>
 
+</div>
 </div>
 
 <script>
-
-const zipLookup={
-"80202":[39.7525,-104.9995],
-"80301":[40.0392,-105.2519],
-"80401":[39.7555,-105.2211],
-"81657":[39.6403,-106.3742],
-"81501":[39.0639,-108.5506],
-"81301":[37.2753,-107.8801]
+const zipLookup = {
+"80202": {lat:39.7525, lon:-104.9995},
+"80014": {lat:39.6671, lon:-104.8344},
+"80021": {lat:39.8712, lon:-105.0972},
+"80301": {lat:40.0392, lon:-105.2519},
+"80524": {lat:40.5853, lon:-105.0439},
+"80401": {lat:39.7555, lon:-105.2211},
+"80439": {lat:39.6333, lon:-105.3172},
+"80452": {lat:39.7055, lon:-105.6997},
+"80443": {lat:39.6275, lon:-106.0434},
+"80424": {lat:39.4817, lon:-106.0384},
+"81657": {lat:39.6403, lon:-106.3742},
+"81620": {lat:39.5347, lon:-106.9378},
+"81601": {lat:39.5505, lon:-107.3248},
+"81501": {lat:39.0639, lon:-108.5506},
+"81401": {lat:38.4783, lon:-107.8762},
+"81435": {lat:37.9375, lon:-107.8123},
+"81432": {lat:38.0297, lon:-107.6714},
+"81611": {lat:39.1911, lon:-106.8175},
+"81623": {lat:39.3914, lon:-107.2112},
+"80435": {lat:39.6403, lon:-105.8716},
+"80498": {lat:39.6466, lon:-106.0510},
+"80487": {lat:40.4849, lon:-106.8317},
+"81101": {lat:37.4694, lon:-105.8797},
+"81301": {lat:37.2753, lon:-107.8801},
+"81147": {lat:37.2694, lon:-106.9995},
+"80903": {lat:38.8339, lon:-104.8214},
+"81201": {lat:38.5347, lon:-106.1240}
 };
 
-const towers={
-verizon:[[39.7392,-104.9903],[39.6403,-106.3742],[39.0639,-108.5506]],
-att:[[39.7525,-104.9995],[39.5501,-107.3248],[37.2753,-107.8801]],
-tmobile:[[39.7392,-104.9903],[39.5501,-107.3248],[37.2753,-107.8801]]
+const towers = {
+verizon: [
+{lat:39.7392, lon:-104.9903, height:42},
+{lat:39.6671, lon:-104.8344, height:40},
+{lat:39.8712, lon:-105.0972, height:38},
+{lat:40.0392, lon:-105.2519, height:40},
+{lat:40.5853, lon:-105.0439, height:41},
+{lat:38.8339, lon:-104.8214, height:42},
+{lat:39.7555, lon:-105.2211, height:39},
+{lat:39.6333, lon:-105.3172, height:38},
+{lat:39.7055, lon:-105.6997, height:37},
+{lat:39.6403, lon:-105.8716, height:36},
+{lat:39.6466, lon:-106.0510, height:36},
+{lat:39.4817, lon:-106.0384, height:36},
+{lat:39.6275, lon:-106.0434, height:37},
+{lat:39.6403, lon:-106.3742, height:38},
+{lat:39.5347, lon:-106.9378, height:37},
+{lat:39.5501, lon:-107.3248, height:40},
+{lat:39.1911, lon:-106.8175, height:38},
+{lat:39.3914, lon:-107.2112, height:36},
+{lat:40.4849, lon:-106.8317, height:37},
+{lat:38.5347, lon:-106.1240, height:36},
+{lat:39.0639, lon:-108.5506, height:40},
+{lat:38.4783, lon:-107.8762, height:38},
+{lat:38.0297, lon:-107.6714, height:35},
+{lat:37.9375, lon:-107.8123, height:35},
+{lat:37.2753, lon:-107.8801, height:36},
+{lat:37.4694, lon:-105.8797, height:35},
+{lat:37.2694, lon:-106.9995, height:34}
+],
+att: [
+{lat:39.7525, lon:-104.9995, height:40},
+{lat:39.6671, lon:-104.8344, height:39},
+{lat:39.8712, lon:-105.0972, height:37},
+{lat:40.0392, lon:-105.2519, height:40},
+{lat:40.5853, lon:-105.0439, height:40},
+{lat:38.8339, lon:-104.8214, height:40},
+{lat:39.7555, lon:-105.2211, height:38},
+{lat:39.6333, lon:-105.3172, height:37},
+{lat:39.7055, lon:-105.6997, height:36},
+{lat:39.6403, lon:-105.8716, height:35},
+{lat:39.6466, lon:-106.0510, height:35},
+{lat:39.4817, lon:-106.0384, height:35},
+{lat:39.6403, lon:-106.3742, height:36},
+{lat:39.5347, lon:-106.9378, height:37},
+{lat:39.5501, lon:-107.3248, height:38},
+{lat:39.1911, lon:-106.8175, height:36},
+{lat:39.3914, lon:-107.2112, height:35},
+{lat:40.4849, lon:-106.8317, height:35},
+{lat:38.5347, lon:-106.1240, height:35},
+{lat:39.0639, lon:-108.5506, height:38},
+{lat:38.4783, lon:-107.8762, height:37},
+{lat:38.0297, lon:-107.6714, height:34},
+{lat:37.9375, lon:-107.8123, height:34},
+{lat:37.2753, lon:-107.8801, height:36},
+{lat:37.4694, lon:-105.8797, height:34},
+{lat:37.2694, lon:-106.9995, height:33}
+],
+tmobile: [
+{lat:39.7392, lon:-104.9903, height:36},
+{lat:39.6671, lon:-104.8344, height:36},
+{lat:39.8712, lon:-105.0972, height:34},
+{lat:40.0392, lon:-105.2519, height:35},
+{lat:40.5853, lon:-105.0439, height:35},
+{lat:38.8339, lon:-104.8214, height:36},
+{lat:39.7555, lon:-105.2211, height:34},
+{lat:39.6333, lon:-105.3172, height:33},
+{lat:39.7055, lon:-105.6997, height:33},
+{lat:39.6403, lon:-105.8716, height:33},
+{lat:39.6466, lon:-106.0510, height:33},
+{lat:39.4817, lon:-106.0384, height:32},
+{lat:39.6403, lon:-106.3742, height:33},
+{lat:39.5347, lon:-106.9378, height:33},
+{lat:39.5501, lon:-107.3248, height:35},
+{lat:39.1911, lon:-106.8175, height:33},
+{lat:39.3914, lon:-107.2112, height:32},
+{lat:40.4849, lon:-106.8317, height:33},
+{lat:38.5347, lon:-106.1240, height:32},
+{lat:39.0639, lon:-108.5506, height:35},
+{lat:38.4783, lon:-107.8762, height:34},
+{lat:38.0297, lon:-107.6714, height:32},
+{lat:37.9375, lon:-107.8123, height:32},
+{lat:37.2753, lon:-107.8801, height:34},
+{lat:37.4694, lon:-105.8797, height:32},
+{lat:37.2694, lon:-106.9995, height:31}
+]
 };
 
-function haversine(lat1,lon1,lat2,lon2){
+function resolveLocation(){
+const zip=document.getElementById("zip").value.trim();
+if(zip && zipLookup[zip]) return zipLookup[zip];
+
+const lat=parseFloat(document.getElementById("lat").value);
+const lon=parseFloat(document.getElementById("lon").value);
+return {lat,lon};
+}
+
+function haversine(lat1, lon1, lat2, lon2){
 const R=3958.8;
 const dLat=(lat2-lat1)*Math.PI/180;
 const dLon=(lon2-lon1)*Math.PI/180;
-const a=Math.sin(dLat/2)**2+Math.cos(lat1*Math.PI/180)*Math.cos(lat2*Math.PI/180)*Math.sin(dLon/2)**2;
+const a=
+Math.sin(dLat/2)**2+
+Math.cos(lat1*Math.PI/180)*
+Math.cos(lat2*Math.PI/180)*
+Math.sin(dLon/2)**2;
 return R*(2*Math.atan2(Math.sqrt(a),Math.sqrt(1-a)));
 }
 
-function terrainPenalty(t){
-if(t==="rolling")return 2;
-if(t==="forest")return 3;
-if(t==="mountain")return 6;
-if(t==="canyon")return 8;
+function radioRange(height){
+const ft=height*3.28;
+return 1.23*(Math.sqrt(ft)+Math.sqrt(5));
+}
+
+function terrainPenalty(type){
+if(type==="flat") return 0;
+if(type==="rolling") return 2;
+if(type==="forest") return 3;
+if(type==="mountain") return 6;
+if(type==="canyon") return 8;
 return 0;
 }
 
 function estimate(){
+const output=document.getElementById("output");
+const loc=resolveLocation();
 
-let zip=document.getElementById("zip").value.trim();
-
-let lat,lon;
-
-if(zipLookup[zip]){
-lat=zipLookup[zip][0];
-lon=zipLookup[zip][1];
-}else{
-lat=parseFloat(lat.value);
-lon=parseFloat(lon.value);
-}
-
-if(isNaN(lat)||isNaN(lon)){
-result.style.display="block";
-result.innerHTML="Enter ZIP or coordinates.";
+if(!loc || Number.isNaN(loc.lat) || Number.isNaN(loc.lon)){
+output.innerHTML='<div class="small">Enter ZIP or coordinates.</div>';
 return;
 }
 
-let carrier=document.getElementById("carrier").value;
+const carrier=document.getElementById("carrier").value;
+const carrierTowers=towers[carrier] || [];
 
-let best=999;
+if(!carrierTowers.length){
+output.innerHTML='<div class="small">No tower samples available for that carrier yet.</div>';
+return;
+}
 
-towers[carrier].forEach(t=>{
-let d=haversine(lat,lon,t[0],t[1]);
-if(d<best)best=d;
+let best=null;
+
+carrierTowers.forEach(t=>{
+let d=haversine(loc.lat,loc.lon,t.lat,t.lon);
+if(!best || d<best.distance){
+best={tower:t,distance:d};
+}
 });
 
-let terrain=document.getElementById("terrain").value;
-
-let range=25-terrainPenalty(terrain);
+let range=radioRange(best.tower.height);
+const terrain=document.getElementById("terrain").value;
+let effective=range-terrainPenalty(terrain);
 
 let status="Unlikely";
 let color="bad";
 
-if(best<range*.6){status="Likely";color="good"}
-else if(best<range){status="Possible";color="maybe"}
+if(best.distance<effective*0.6){
+status="Likely";
+color="good";
+}else if(best.distance<effective){
+status="Possible";
+color="maybe";
+}
 
-result.style.display="block";
-result.innerHTML=`
+const carrierName = carrier === "att" ? "AT&T" : carrier === "tmobile" ? "T-Mobile" : "Verizon";
+const terrainPenaltyValue = terrainPenalty(terrain);
+
+output.innerHTML = `
+<div class="small">Carrier: <strong>${carrierName}</strong></div>
 <div class="kpis">
-<div class="kpi">Nearest Tower: ${best.toFixed(1)} miles</div>
-<div class="kpi">Estimated Range: ${range.toFixed(1)} miles</div>
-<div class="kpi">Terrain Loss: −${terrainPenalty(terrain)} miles</div>
-<div class="kpi"><b class="${color}">${status}</b></div>
+  <div class="kpi"><div class="label">Nearest tower distance</div><div class="value">${best.distance.toFixed(1)} miles</div></div>
+  <div class="kpi"><div class="label">Estimated usable range</div><div class="value">${effective.toFixed(1)} miles</div></div>
+  <div class="kpi"><div class="label">Terrain adjustment</div><div class="value">−${terrainPenaltyValue.toFixed(1)} miles</div></div>
+  <div class="kpi"><div class="label">Signal estimate</div><div class="value"><span class="${color}">${status}</span></div></div>
 </div>
+<div class="footer-note">Estimate is based on sample data for established carriers and simplified terrain assumptions.</div>
 `;
-
 }
 
 function getLocation(){
 navigator.geolocation.getCurrentPosition(pos=>{
-lat.value=pos.coords.latitude.toFixed(5);
-lon.value=pos.coords.longitude.toFixed(5);
+document.getElementById("lat").value=pos.coords.latitude.toFixed(5);
+document.getElementById("lon").value=pos.coords.longitude.toFixed(5);
 });
 }
-
 </script>
 
 </body>
