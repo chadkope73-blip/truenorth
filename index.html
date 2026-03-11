@@ -1,242 +1,360 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Magnetic Declination & True North Calculator | In Tandem Toolworks</title>
-
-<meta name="description" content="Free magnetic declination and true north calculator for compass correction, solar alignment, drone operations, and field navigation. Built by In Tandem Toolworks.">
-
-<link rel="icon" href="logo.png">
+<title>True North | Cellular Reception Estimator</title>
 
 <style>
-
 body{
-font-family:Arial, Helvetica, sans-serif;
-background:#0f1416;
-color:#e6dfc9;
-text-align:center;
+font-family: system-ui, sans-serif;
+background:#0f172a;
+color:#e2e8f0;
 margin:0;
 padding:20px;
+text-align:center;
 }
 
 .container{
 max-width:520px;
 margin:auto;
-background:#1b2224;
-padding:25px;
-border-radius:14px;
-box-shadow:0 6px 18px rgba(0,0,0,.45);
-}
-
-.logo{
-width:180px;
-margin-bottom:20px;
 }
 
 h1{
-color:#c8a46b;
-margin-bottom:15px;
+font-size:2rem;
+margin-bottom:10px;
 }
 
 p{
-color:#d5cdb3;
-line-height:1.5;
+color:#94a3b8;
 }
 
-input{
+input, select, button{
 width:100%;
-padding:14px;
-margin-top:12px;
-background:#0e1315;
-border:1px solid #3a464b;
-border-radius:10px;
-color:white;
-font-size:16px;
+padding:12px;
+margin-top:10px;
+border-radius:8px;
+border:none;
+font-size:1rem;
 }
 
 button{
-width:100%;
-padding:14px;
-margin-top:15px;
-background:#c8a46b;
-border:none;
-border-radius:10px;
-font-size:17px;
+background:#38bdf8;
+color:black;
 font-weight:bold;
 cursor:pointer;
 }
 
 .result{
 margin-top:20px;
-padding:18px;
-background:#0e1315;
-border-radius:10px;
-border:1px solid #3a464b;
-text-align:left;
-}
-
-.tools{
-margin-top:35px;
-}
-
-.tool-btn{
-display:block;
-padding:14px;
-margin-top:10px;
-border:1px solid #3a464b;
-border-radius:10px;
-background:#0e1315;
-color:#e6dfc9;
-text-decoration:none;
-font-weight:bold;
-}
-
-.donate{
-margin-top:30px;
 padding:15px;
-border:1px solid #c8a46b;
-border-radius:12px;
+background:#1e293b;
+border-radius:10px;
 }
 
-.donate a{
-display:flex;
-align-items:center;
-justify-content:center;
-gap:10px;
-text-decoration:none;
-color:#c8a46b;
-font-weight:bold;
-}
+.good{color:#22c55e;}
+.maybe{color:#facc15;}
+.bad{color:#ef4444;}
 
-.donate img{
-width:24px;
-height:24px;
-}
-
-.footer{
-margin-top:25px;
-}
-
-.footer a{
-color:#c8a46b;
-text-decoration:none;
-}
-
+small{color:#64748b}
 </style>
-
 </head>
 
 <body>
 
 <div class="container">
 
-<img src="logo.png" class="logo">
-
-<h1>True North Field Tool</h1>
+<h1>True North</h1>
 
 <p>
-Find magnetic declination and compass correction for field navigation,
-solar alignment, surveying, and drone operations.
+A location-based cellular data reception estimation tool for trip planning.
 </p>
 
-<input id="lat" placeholder="Latitude (Example: 39.7)">
-<input id="lon" placeholder="Longitude (Example: -104.9)">
+<input id="zip" placeholder="ZIP code (Colorado priority areas)">
 
-<button onclick="calculate()">Calculate True North</button>
+<input id="lat" placeholder="Latitude (optional)">
+<input id="lon" placeholder="Longitude (optional)">
 
-<div id="result" class="result" style="display:none;"></div>
+<select id="carrier">
+<option value="verizon">Verizon</option>
+<option value="att">AT&T</option>
+<option value="tmobile">T-Mobile</option>
+</select>
 
-<div class="tools">
+<select id="terrain">
+<option value="flat">Flat terrain</option>
+<option value="rolling">Rolling hills</option>
+<option value="forest">Forest</option>
+<option value="mountain">Mountain</option>
+<option value="canyon">Canyon</option>
+</select>
 
-<h2>More Field Tools</h2>
+<button onclick="estimate()">Estimate Signal</button>
 
-<a class="tool-btn" href="https://ittworks.com">
-Solar Panel Direction Tool
-</a>
+<button onclick="getLocation()">Use My Location</button>
 
-<a class="tool-btn" href="https://production.ittworks.com">
-Solar Production Calculator
-</a>
+<div id="output" class="result"></div>
 
-<a class="tool-btn" href="https://offgrid.ittworks.com">
-Off-Grid Solar System Size
-</a>
-
-</div>
-
-<div class="donate">
-
-<p>Enjoying the tools? Support development.</p>
-
-<a href="https://donate.stripe.com/4gM3cv0kV4UJbzPfeDeAg00" target="_blank">
-
-<img src="ittw-donate.png">
-
-Support InTandem Toolworks
-
-</a>
-
-</div>
-
-<div class="footer">
-
-<p><strong>Built by In Tandem Toolworks</strong></p>
-
-<p>
-<a href="mailto:support@ittworks.com">support@ittworks.com</a>
-</p>
-
-<p>
-<a href="https://facebook.com/InTandemToolworks">Follow on Facebook</a>
-</p>
-
-</div>
+<small>Enter ZIP or coordinates. Estimates are for established carriers and designed for Colorado field trip planning across the Front Range, I-70 corridor, mountain towns, and Western Slope.</small>
 
 </div>
 
 <script>
 
-function calculate(){
+// Colorado priority ZIP → coordinates
+const zipLookup = {
 
-let lat=parseFloat(document.getElementById("lat").value);
+"80202": {lat:39.7525, lon:-104.9995},
+"80014": {lat:39.6671, lon:-104.8344},
+"80021": {lat:39.8712, lon:-105.0972},
+"80301": {lat:40.0392, lon:-105.2519},
+"80524": {lat:40.5853, lon:-105.0439},
 
-let result=document.getElementById("result");
+"80401": {lat:39.7555, lon:-105.2211},
+"80439": {lat:39.6333, lon:-105.3172},
+"80452": {lat:39.7055, lon:-105.6997},
+"80443": {lat:39.6275, lon:-106.0434},
+"80424": {lat:39.4817, lon:-106.0384},
+"81657": {lat:39.6403, lon:-106.3742},
+"81620": {lat:39.5347, lon:-106.9378},
+"81601": {lat:39.5505, lon:-107.3248},
 
-if(isNaN(lat)){
-result.style.display="block";
-result.innerHTML="Please enter a valid latitude.";
+"81501": {lat:39.0639, lon:-108.5506},
+"81401": {lat:38.4783, lon:-107.8762},
+"81435": {lat:37.9375, lon:-107.8123},
+"81432": {lat:38.0297, lon:-107.6714},
+
+"81611": {lat:39.1911, lon:-106.8175},
+"81623": {lat:39.3914, lon:-107.2112},
+
+"80435": {lat:39.6403, lon:-105.8716},
+"80498": {lat:39.6466, lon:-106.0510},
+"80487": {lat:40.4849, lon:-106.8317},
+
+"81101": {lat:37.4694, lon:-105.8797},
+"81301": {lat:37.2753, lon:-107.8801},
+"81147": {lat:37.2694, lon:-106.9995},
+
+"80903": {lat:38.8339, lon:-104.8214},
+"81201": {lat:38.5347, lon:-106.1240}
+
+};
+
+// expanded Colorado sample tower locations for established carriers
+// grouped to better reflect Front Range, I-70 corridor, mountain towns, and Western Slope coverage patterns
+const towers = {
+verizon: [
+// Front Range
+{lat:39.7392, lon:-104.9903, height:42}, // Denver
+{lat:39.6671, lon:-104.8344, height:40}, // Aurora
+{lat:39.8712, lon:-105.0972, height:38}, // Broomfield
+{lat:40.0392, lon:-105.2519, height:40}, // Boulder
+{lat:40.5853, lon:-105.0439, height:41}, // Fort Collins
+{lat:38.8339, lon:-104.8214, height:42}, // Colorado Springs
+
+// I-70 corridor and mountain towns
+{lat:39.7555, lon:-105.2211, height:39}, // Golden
+{lat:39.6333, lon:-105.3172, height:38}, // Evergreen
+{lat:39.7055, lon:-105.6997, height:37}, // Idaho Springs
+{lat:39.6403, lon:-105.8716, height:36}, // Dillon
+{lat:39.6466, lon:-106.0510, height:36}, // Silverthorne
+{lat:39.4817, lon:-106.0384, height:36}, // Breckenridge
+{lat:39.6275, lon:-106.0434, height:37}, // Frisco area
+{lat:39.6403, lon:-106.3742, height:38}, // Vail
+{lat:39.5347, lon:-106.9378, height:37}, // Edwards
+{lat:39.5501, lon:-107.3248, height:40}, // Glenwood Springs
+{lat:39.1911, lon:-106.8175, height:38}, // Aspen
+{lat:39.3914, lon:-107.2112, height:36}, // Carbondale
+{lat:40.4849, lon:-106.8317, height:37}, // Steamboat Springs
+{lat:38.5347, lon:-106.1240, height:36}, // Salida
+
+// Western Slope and southwest
+{lat:39.0639, lon:-108.5506, height:40}, // Grand Junction
+{lat:38.4783, lon:-107.8762, height:38}, // Montrose
+{lat:38.0297, lon:-107.6714, height:35}, // Ridgway
+{lat:37.9375, lon:-107.8123, height:35}, // Telluride
+{lat:37.2753, lon:-107.8801, height:36}, // Durango
+{lat:37.4694, lon:-105.8797, height:35}, // Alamosa
+{lat:37.2694, lon:-106.9995, height:34}  // Pagosa Springs
+],
+att: [
+// Front Range
+{lat:39.7525, lon:-104.9995, height:40}, // Denver
+{lat:39.6671, lon:-104.8344, height:39}, // Aurora
+{lat:39.8712, lon:-105.0972, height:37}, // Broomfield
+{lat:40.0392, lon:-105.2519, height:40}, // Boulder
+{lat:40.5853, lon:-105.0439, height:40}, // Fort Collins
+{lat:38.8339, lon:-104.8214, height:40}, // Colorado Springs
+
+// I-70 corridor and mountain towns
+{lat:39.7555, lon:-105.2211, height:38}, // Golden
+{lat:39.6333, lon:-105.3172, height:37}, // Evergreen
+{lat:39.7055, lon:-105.6997, height:36}, // Idaho Springs
+{lat:39.6403, lon:-105.8716, height:35}, // Dillon
+{lat:39.6466, lon:-106.0510, height:35}, // Silverthorne
+{lat:39.4817, lon:-106.0384, height:35}, // Breckenridge
+{lat:39.6403, lon:-106.3742, height:36}, // Vail
+{lat:39.5347, lon:-106.9378, height:37}, // Edwards
+{lat:39.5501, lon:-107.3248, height:38}, // Glenwood Springs
+{lat:39.1911, lon:-106.8175, height:36}, // Aspen
+{lat:39.3914, lon:-107.2112, height:35}, // Carbondale
+{lat:40.4849, lon:-106.8317, height:35}, // Steamboat Springs
+{lat:38.5347, lon:-106.1240, height:35}, // Salida
+
+// Western Slope and southwest
+{lat:39.0639, lon:-108.5506, height:38}, // Grand Junction
+{lat:38.4783, lon:-107.8762, height:37}, // Montrose
+{lat:38.0297, lon:-107.6714, height:34}, // Ridgway
+{lat:37.9375, lon:-107.8123, height:34}, // Telluride
+{lat:37.2753, lon:-107.8801, height:36}, // Durango
+{lat:37.4694, lon:-105.8797, height:34}, // Alamosa
+{lat:37.2694, lon:-106.9995, height:33}  // Pagosa Springs
+],
+tmobile: [
+// Front Range
+{lat:39.7392, lon:-104.9903, height:36}, // Denver
+{lat:39.6671, lon:-104.8344, height:36}, // Aurora
+{lat:39.8712, lon:-105.0972, height:34}, // Broomfield
+{lat:40.0392, lon:-105.2519, height:35}, // Boulder
+{lat:40.5853, lon:-105.0439, height:35}, // Fort Collins
+{lat:38.8339, lon:-104.8214, height:36}, // Colorado Springs
+
+// I-70 corridor and mountain towns
+{lat:39.7555, lon:-105.2211, height:34}, // Golden
+{lat:39.6333, lon:-105.3172, height:33}, // Evergreen
+{lat:39.7055, lon:-105.6997, height:33}, // Idaho Springs
+{lat:39.6403, lon:-105.8716, height:33}, // Dillon
+{lat:39.6466, lon:-106.0510, height:33}, // Silverthorne
+{lat:39.4817, lon:-106.0384, height:32}, // Breckenridge
+{lat:39.6403, lon:-106.3742, height:33}, // Vail
+{lat:39.5347, lon:-106.9378, height:33}, // Edwards
+{lat:39.5501, lon:-107.3248, height:35}, // Glenwood Springs
+{lat:39.1911, lon:-106.8175, height:33}, // Aspen
+{lat:39.3914, lon:-107.2112, height:32}, // Carbondale
+{lat:40.4849, lon:-106.8317, height:33}, // Steamboat Springs
+{lat:38.5347, lon:-106.1240, height:32}, // Salida
+
+// Western Slope and southwest
+{lat:39.0639, lon:-108.5506, height:35}, // Grand Junction
+{lat:38.4783, lon:-107.8762, height:34}, // Montrose
+{lat:38.0297, lon:-107.6714, height:32}, // Ridgway
+{lat:37.9375, lon:-107.8123, height:32}, // Telluride
+{lat:37.2753, lon:-107.8801, height:34}, // Durango
+{lat:37.4694, lon:-105.8797, height:32}, // Alamosa
+{lat:37.2694, lon:-106.9995, height:31}  // Pagosa Springs
+]
+};
+
+function resolveLocation(){
+
+const zip=document.getElementById("zip").value.trim();
+
+if(zip && zipLookup[zip]){
+return zipLookup[zip];
+}
+
+const lat=parseFloat(document.getElementById("lat").value);
+const lon=parseFloat(document.getElementById("lon").value);
+
+return {lat,lon};
+
+}
+
+function haversine(lat1, lon1, lat2, lon2){
+const R=3958.8;
+const dLat=(lat2-lat1)*Math.PI/180;
+const dLon=(lon2-lon1)*Math.PI/180;
+
+const a=
+Math.sin(dLat/2)**2+
+Math.cos(lat1*Math.PI/180)*
+Math.cos(lat2*Math.PI/180)*
+Math.sin(dLon/2)**2;
+
+return R*(2*Math.atan2(Math.sqrt(a),Math.sqrt(1-a)));
+}
+
+function radioRange(height){
+const ft=height*3.28;
+return 1.23*(Math.sqrt(ft)+Math.sqrt(5));
+}
+
+function terrainPenalty(type){
+
+if(type==="flat") return 0;
+if(type==="rolling") return 2;
+if(type==="forest") return 3;
+if(type==="mountain") return 6;
+if(type==="canyon") return 8;
+
+return 0;
+}
+
+function estimate(){
+
+const loc=resolveLocation();
+
+if(!loc || Number.isNaN(loc.lat) || Number.isNaN(loc.lon)){
+output.innerHTML="Enter ZIP or coordinates.";
 return;
 }
 
-let declination=(7 + (lat-35)*0.12);
+const carrier=document.getElementById("carrier").value;
+const carrierTowers=towers[carrier] || [];
 
-let direction=declination>0 ? "East" : "West";
+if(!carrierTowers.length){
+output.innerHTML="No tower samples available for that carrier yet.";
+return;
+}
 
-let correction=Math.abs(declination).toFixed(1);
+let best=null;
 
-result.style.display="block";
+carrierTowers.forEach(t=>{
+let d=haversine(loc.lat,loc.lon,t.lat,t.lon);
+if(!best || d<best.distance){
+best={tower:t,distance:d};
+}
+});
 
-result.innerHTML=
+let range=radioRange(best.tower.height);
+const terrain=document.getElementById("terrain").value;
+let effective=range-terrainPenalty(terrain);
 
-"<h3 style='color:#c8a46b;'>Magnetic Declination</h3>" +
+let status="Unlikely";
+let color="bad";
 
-"<p style='font-size:22px;'>"+correction+"° "+direction+"</p>" +
+if(best.distance<effective*0.6){
+status="Likely";
+color="good";
+}
+else if(best.distance<effective){
+status="Possible";
+color="maybe";
+}
 
-"<h3>Compass Correction</h3>" +
+const carrierName = carrier === "att" ? "AT&T" : carrier === "tmobile" ? "T-Mobile" : "Verizon";
 
-"<p>"+
+output.innerHTML=
+`
+Carrier: ${carrierName}<br>
+Nearest tower distance: ${best.distance.toFixed(1)} miles<br>
+Estimated usable range: ${effective.toFixed(1)} miles<br><br>
+Signal estimate:
+<span class="${color}">${status}</span><br><br>
+<small>Estimate is based on sample data for established carriers and simplified terrain assumptions.</small>
+`;
 
-(direction==="East" ? "Subtract ":"Add ")+
-correction+
-"° from compass heading to find True North."+
+}
 
-"</p>"+
+function getLocation(){
 
-"<p><strong>Tip:</strong> Solar panels and maps use True North, while a compass points to Magnetic North.</p>";
+navigator.geolocation.getCurrentPosition(pos=>{
+
+lat.value=pos.coords.latitude.toFixed(5);
+lon.value=pos.coords.longitude.toFixed(5);
+
+});
 
 }
 
