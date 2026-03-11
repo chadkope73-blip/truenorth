@@ -6,418 +6,345 @@
 
 <title>True North | Cellular Reception Estimator</title>
 
+<meta name="description" content="Estimate cellular reception before traveling using ZIP code, coordinates, and terrain conditions.">
+<meta name="theme-color" content="#0f1416">
+
+<link rel="icon" href="logo.png">
+
+<script defer src="/_vercel/insights/script.js"></script>
+
 <style>
+
 :root{
-  --bg1:#0b1220;
-  --bg2:#13233f;
-  --card:#142033cc;
-  --line:#2a3d63;
-  --text:#e8eefc;
-  --muted:#a9b7d3;
-  --accent:#8dd3ff;
-  --accent2:#ffd98a;
-  --good:#65d98f;
-  --maybe:#ffd166;
-  --bad:#ff8a80;
-  --purple:#c7b0ff;
+--bg1:#0b1220;
+--bg2:#13233f;
+--card:rgba(20,32,51,.82);
+--line:#2a3d63;
+--text:#e8eefc;
+--muted:#a9b7d3;
+--accent:#8dd3ff;
+--accent2:#ffd98a;
+--good:#65d98f;
+--maybe:#ffd166;
+--bad:#ff8a80;
+--panel:#0d1727;
 }
-*{box-sizing:border-box}
+
+*{
+box-sizing:border-box;
+}
+
 body{
-  font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
-  background:linear-gradient(180deg,var(--bg2),var(--bg1));
-  color:var(--text);
-  margin:0;
-  min-height:100vh;
-  padding:20px;
+font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+background:
+linear-gradient(rgba(11,18,32,.45),rgba(11,18,32,.55)),
+url("/topo-bg.jpg");
+background-size:cover;
+background-position:center;
+background-attachment:fixed;
+color:var(--text);
+text-align:center;
+margin:0;
+padding:20px;
+min-height:100vh;
 }
-.container{max-width:760px;margin:0 auto;}
-.hero{
-  position:relative;
-  overflow:hidden;
-  border:1px solid var(--line);
-  border-radius:28px;
-  padding:22px;
-  margin-bottom:18px;
-  background:
-    radial-gradient(circle at top right, rgba(141,211,255,.18), transparent 28%),
-    linear-gradient(180deg, rgba(255,217,138,.08), rgba(255,255,255,.02));
-  box-shadow:0 20px 60px rgba(0,0,0,.28);
+
+.navgenie-link{
+position:fixed;
+top:16px;
+right:16px;
+z-index:1000;
 }
-.topo{
-  position:absolute;
-  inset:auto -10% -8% -10%;
-  height:120px;
-  opacity:.28;
-  background:
-    repeating-radial-gradient(circle at 20% 120%, transparent 0 14px, #8dd3ff 15px 16px, transparent 17px 29px),
-    repeating-radial-gradient(circle at 70% 130%, transparent 0 18px, #ffd98a 19px 20px, transparent 21px 38px),
-    repeating-radial-gradient(circle at 40% 120%, transparent 0 22px, #c7b0ff 23px 24px, transparent 25px 46px);
+
+.navgenie-link a{
+background:#0f1b2e;
+color:#f2d8a7;
+padding:8px 14px;
+border-radius:10px;
+text-decoration:none;
+font-weight:600;
+border:1px solid rgba(255,255,255,.15);
+box-shadow:0 6px 16px rgba(0,0,0,.35);
 }
-.brand{display:flex;align-items:center;gap:14px;position:relative;z-index:1}
-.logo{width:56px;height:56px;flex:0 0 56px}
-.logo svg{width:100%;height:100%;display:block}
-.eyebrow{display:inline-flex;align-items:center;gap:8px;font-size:.84rem;color:var(--accent2);letter-spacing:.03em;text-transform:uppercase}
-h1{margin:4px 0 6px;font-size:2rem;line-height:1.05}
-.subtitle{margin:0;color:var(--muted);max-width:44rem}
-.card{
-  background:var(--card);
-  backdrop-filter:blur(8px);
-  border:1px solid var(--line);
-  border-radius:24px;
-  padding:18px;
-  box-shadow:0 16px 40px rgba(0,0,0,.2);
+
+.container{
+max-width:720px;
+margin:auto;
+background:var(--card);
+padding:25px;
+border-radius:24px;
+border:1px solid var(--line);
+backdrop-filter:blur(8px);
+box-shadow:0 16px 40px rgba(0,0,0,.25);
 }
-.grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
-.full{grid-column:1 / -1}
-label{display:block;font-size:.9rem;color:var(--muted);margin:0 0 6px;text-align:left}
-input, select, button{width:100%;padding:13px 14px;border-radius:14px;border:1px solid var(--line);font-size:1rem}
-input,select{background:#0d1727;color:var(--text)}
-button{background:linear-gradient(180deg,var(--accent),#67b8f6);color:#07111f;font-weight:700;cursor:pointer;border:none;box-shadow:0 10px 24px rgba(103,184,246,.22)}
-button.secondary{background:linear-gradient(180deg,#ffe7b2,#ffd98a);box-shadow:0 10px 24px rgba(255,217,138,.16)}
-.result{margin-top:18px;padding:18px;background:linear-gradient(180deg, rgba(255,255,255,.04), rgba(255,255,255,.02));border:1px solid var(--line);border-radius:20px;text-align:left}
-.kpis{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-top:12px}
-.kpi{border:1px solid var(--line);border-radius:16px;padding:12px;background:#0d1727}
-.kpi .label{font-size:.82rem;color:var(--muted);margin-bottom:4px}
-.kpi .value{font-size:1.05rem;font-weight:700}
-.good{color:var(--good);font-weight:800}
-.maybe{color:var(--maybe);font-weight:800}
-.bad{color:var(--bad);font-weight:800}
-.small{color:var(--muted);font-size:.88rem;line-height:1.45}
-.footer-note{margin-top:14px;color:var(--muted);font-size:.86rem}
-@media (max-width:640px){.grid,.kpis{grid-template-columns:1fr} h1{font-size:1.75rem}}
+
+.logo{
+max-width:180px;
+margin-bottom:20px;
+}
+
+h1{
+color:var(--accent2);
+margin-bottom:10px;
+}
+
+p{
+color:var(--muted);
+line-height:1.5;
+margin-bottom:20px;
+}
+
+input,select,button{
+width:100%;
+padding:12px;
+margin-top:10px;
+border-radius:14px;
+border:none;
+font-size:16px;
+box-sizing:border-box;
+}
+
+input,select{
+background:var(--panel);
+color:var(--text);
+border:1px solid var(--line);
+}
+
+button{
+background:linear-gradient(180deg,var(--accent),#67b8f6);
+color:#07111f;
+font-weight:bold;
+cursor:pointer;
+}
+
+button.secondary{
+background:linear-gradient(180deg,#ffe7b2,#ffd98a);
+}
+
+.result{
+margin-top:20px;
+padding:15px;
+background:var(--panel);
+border-radius:14px;
+border:1px solid var(--line);
+display:none;
+text-align:left;
+}
+
+.kpis{
+display:grid;
+grid-template-columns:1fr 1fr;
+gap:10px;
+margin-top:10px;
+}
+
+.kpi{
+background:#101a2c;
+padding:10px;
+border-radius:12px;
+border:1px solid var(--line);
+}
+
+.good{color:var(--good);}
+.maybe{color:var(--maybe);}
+.bad{color:var(--bad);}
+
+.footer{
+margin-top:25px;
+font-size:14px;
+color:var(--muted);
+}
+
+.footer a{
+color:var(--accent2);
+text-decoration:none;
+}
+
+.donate{
+margin-top:25px;
+}
+
+.donate-btn{
+display:inline-flex;
+align-items:center;
+gap:10px;
+padding:10px 16px;
+border:1px solid var(--accent2);
+border-radius:12px;
+background:#0e1a22;
+color:var(--accent2);
+text-decoration:none;
+font-weight:bold;
+}
+
+.donate-btn img{
+width:24px;
+height:24px;
+}
+
 </style>
 </head>
 
 <body>
 
+<div class="navgenie-link">
+<a href="https://navgenie.ittworks.com">🧭 Toolbelt</a>
+</div>
+
 <div class="container">
 
-<section class="hero">
-  <div class="brand">
-    <div class="logo">
-      <img src="/logo.png" alt="InTandem ToolWorks logo" style="width:100%;height:100%;object-fit:contain;"/>
-    </div>
-    <div>
-      <div class="eyebrow">InTandem ToolWorks</div>
-      <h1>True North</h1>
-      <p class="subtitle">A location-based cellular data reception estimation tool for trip planning.</p>
-    </div>
-  </div>
-  <div class="topo"></div>
-</section>
+<img src="logo.png" class="logo">
 
-<section class="card">
-  <div class="grid">
-    <div>
-      <label for="zip">ZIP code</label>
-      <input id="zip" placeholder="Colorado priority areas">
-    </div>
+<h1>True North</h1>
 
-    <div>
-      <label for="carrier">Established carrier</label>
-      <select id="carrier">
-        <option value="verizon">Verizon</option>
-        <option value="att">AT&amp;T</option>
-        <option value="tmobile">T-Mobile</option>
-      </select>
-    </div>
+<p>
+Estimate cellular signal strength before traveling using location, carrier, and terrain.
+</p>
 
-    <div>
-      <label for="lat">Latitude</label>
-      <input id="lat" placeholder="Optional">
-    </div>
-    <div>
-      <label for="lon">Longitude</label>
-      <input id="lon" placeholder="Optional">
-    </div>
+<input id="zip" placeholder="ZIP Code">
 
-    <div class="full">
-      <label for="terrain">Terrain</label>
-      <select id="terrain">
-        <option value="flat">Flat terrain</option>
-        <option value="rolling">Rolling hills</option>
-        <option value="forest">Forest</option>
-        <option value="mountain">Mountain</option>
-        <option value="canyon">Canyon</option>
-      </select>
-    </div>
+<select id="carrier">
+<option value="verizon">Verizon</option>
+<option value="att">AT&T</option>
+<option value="tmobile">T-Mobile</option>
+</select>
 
-    <div>
-      <button onclick="estimate()">Estimate Signal</button>
-    </div>
-    <div>
-      <button class="secondary" onclick="getLocation()">Use My Location</button>
-    </div>
-  </div>
+<input id="lat" placeholder="Latitude (optional)">
+<input id="lon" placeholder="Longitude (optional)">
 
-  <div id="output" class="result">
-    <div class="small">Enter ZIP or coordinates. Estimates are for established carriers and designed for Colorado field trip planning across the Front Range, I-70 corridor, mountain towns, and Western Slope.</div>
-  </div>
+<select id="terrain">
+<option value="flat">Flat terrain</option>
+<option value="rolling">Rolling hills</option>
+<option value="forest">Forest</option>
+<option value="mountain">Mountain</option>
+<option value="canyon">Canyon</option>
+</select>
 
-  <div class="footer-note">Built for fast field planning. Estimates are approximate and work best as a pre-trip guide.</div>
-</section>
+<button onclick="estimate()">Estimate Signal</button>
+<button class="secondary" onclick="getLocation()">Use My Location</button>
+
+<div id="result" class="result"></div>
+
+<div class="donate">
+
+<p>Enjoying the tools? Support development.</p>
+
+<a class="donate-btn" href="https://donate.stripe.com/4gM3cv0kV4UJbzPfeDeAg00" target="_blank">
+<img src="ittw-donate.png">
+Support InTandem Toolworks
+</a>
+
+</div>
+
+<div class="footer">
+
+Built by <b>In Tandem Toolworks</b>
+
+<br><br>
+
+<a href="mailto:support@ittworks.com">
+support@ittworks.com
+</a>
+
+<br><br>
+
+<a href="https://www.facebook.com/InTandemToolworks">
+Follow us on Facebook
+</a>
+
+</div>
 
 </div>
 
 <script>
 
-// Colorado priority ZIP → coordinates
-const zipLookup = {
-
-"80202": {lat:39.7525, lon:-104.9995},
-"80014": {lat:39.6671, lon:-104.8344},
-"80021": {lat:39.8712, lon:-105.0972},
-"80301": {lat:40.0392, lon:-105.2519},
-"80524": {lat:40.5853, lon:-105.0439},
-
-"80401": {lat:39.7555, lon:-105.2211},
-"80439": {lat:39.6333, lon:-105.3172},
-"80452": {lat:39.7055, lon:-105.6997},
-"80443": {lat:39.6275, lon:-106.0434},
-"80424": {lat:39.4817, lon:-106.0384},
-"81657": {lat:39.6403, lon:-106.3742},
-"81620": {lat:39.5347, lon:-106.9378},
-"81601": {lat:39.5505, lon:-107.3248},
-
-"81501": {lat:39.0639, lon:-108.5506},
-"81401": {lat:38.4783, lon:-107.8762},
-"81435": {lat:37.9375, lon:-107.8123},
-"81432": {lat:38.0297, lon:-107.6714},
-
-"81611": {lat:39.1911, lon:-106.8175},
-"81623": {lat:39.3914, lon:-107.2112},
-
-"80435": {lat:39.6403, lon:-105.8716},
-"80498": {lat:39.6466, lon:-106.0510},
-"80487": {lat:40.4849, lon:-106.8317},
-
-"81101": {lat:37.4694, lon:-105.8797},
-"81301": {lat:37.2753, lon:-107.8801},
-"81147": {lat:37.2694, lon:-106.9995},
-
-"80903": {lat:38.8339, lon:-104.8214},
-"81201": {lat:38.5347, lon:-106.1240}
-
+const zipLookup={
+"80202":[39.7525,-104.9995],
+"80301":[40.0392,-105.2519],
+"80401":[39.7555,-105.2211],
+"81657":[39.6403,-106.3742],
+"81501":[39.0639,-108.5506],
+"81301":[37.2753,-107.8801]
 };
 
-// expanded Colorado sample tower locations for established carriers
-// grouped to better reflect Front Range, I-70 corridor, mountain towns, and Western Slope coverage patterns
-const towers = {
-verizon: [
-// Front Range
-{lat:39.7392, lon:-104.9903, height:42}, // Denver
-{lat:39.6671, lon:-104.8344, height:40}, // Aurora
-{lat:39.8712, lon:-105.0972, height:38}, // Broomfield
-{lat:40.0392, lon:-105.2519, height:40}, // Boulder
-{lat:40.5853, lon:-105.0439, height:41}, // Fort Collins
-{lat:38.8339, lon:-104.8214, height:42}, // Colorado Springs
-
-// I-70 corridor and mountain towns
-{lat:39.7555, lon:-105.2211, height:39}, // Golden
-{lat:39.6333, lon:-105.3172, height:38}, // Evergreen
-{lat:39.7055, lon:-105.6997, height:37}, // Idaho Springs
-{lat:39.6403, lon:-105.8716, height:36}, // Dillon
-{lat:39.6466, lon:-106.0510, height:36}, // Silverthorne
-{lat:39.4817, lon:-106.0384, height:36}, // Breckenridge
-{lat:39.6275, lon:-106.0434, height:37}, // Frisco area
-{lat:39.6403, lon:-106.3742, height:38}, // Vail
-{lat:39.5347, lon:-106.9378, height:37}, // Edwards
-{lat:39.5501, lon:-107.3248, height:40}, // Glenwood Springs
-{lat:39.1911, lon:-106.8175, height:38}, // Aspen
-{lat:39.3914, lon:-107.2112, height:36}, // Carbondale
-{lat:40.4849, lon:-106.8317, height:37}, // Steamboat Springs
-{lat:38.5347, lon:-106.1240, height:36}, // Salida
-
-// Western Slope and southwest
-{lat:39.0639, lon:-108.5506, height:40}, // Grand Junction
-{lat:38.4783, lon:-107.8762, height:38}, // Montrose
-{lat:38.0297, lon:-107.6714, height:35}, // Ridgway
-{lat:37.9375, lon:-107.8123, height:35}, // Telluride
-{lat:37.2753, lon:-107.8801, height:36}, // Durango
-{lat:37.4694, lon:-105.8797, height:35}, // Alamosa
-{lat:37.2694, lon:-106.9995, height:34}  // Pagosa Springs
-],
-att: [
-// Front Range
-{lat:39.7525, lon:-104.9995, height:40}, // Denver
-{lat:39.6671, lon:-104.8344, height:39}, // Aurora
-{lat:39.8712, lon:-105.0972, height:37}, // Broomfield
-{lat:40.0392, lon:-105.2519, height:40}, // Boulder
-{lat:40.5853, lon:-105.0439, height:40}, // Fort Collins
-{lat:38.8339, lon:-104.8214, height:40}, // Colorado Springs
-
-// I-70 corridor and mountain towns
-{lat:39.7555, lon:-105.2211, height:38}, // Golden
-{lat:39.6333, lon:-105.3172, height:37}, // Evergreen
-{lat:39.7055, lon:-105.6997, height:36}, // Idaho Springs
-{lat:39.6403, lon:-105.8716, height:35}, // Dillon
-{lat:39.6466, lon:-106.0510, height:35}, // Silverthorne
-{lat:39.4817, lon:-106.0384, height:35}, // Breckenridge
-{lat:39.6403, lon:-106.3742, height:36}, // Vail
-{lat:39.5347, lon:-106.9378, height:37}, // Edwards
-{lat:39.5501, lon:-107.3248, height:38}, // Glenwood Springs
-{lat:39.1911, lon:-106.8175, height:36}, // Aspen
-{lat:39.3914, lon:-107.2112, height:35}, // Carbondale
-{lat:40.4849, lon:-106.8317, height:35}, // Steamboat Springs
-{lat:38.5347, lon:-106.1240, height:35}, // Salida
-
-// Western Slope and southwest
-{lat:39.0639, lon:-108.5506, height:38}, // Grand Junction
-{lat:38.4783, lon:-107.8762, height:37}, // Montrose
-{lat:38.0297, lon:-107.6714, height:34}, // Ridgway
-{lat:37.9375, lon:-107.8123, height:34}, // Telluride
-{lat:37.2753, lon:-107.8801, height:36}, // Durango
-{lat:37.4694, lon:-105.8797, height:34}, // Alamosa
-{lat:37.2694, lon:-106.9995, height:33}  // Pagosa Springs
-],
-tmobile: [
-// Front Range
-{lat:39.7392, lon:-104.9903, height:36}, // Denver
-{lat:39.6671, lon:-104.8344, height:36}, // Aurora
-{lat:39.8712, lon:-105.0972, height:34}, // Broomfield
-{lat:40.0392, lon:-105.2519, height:35}, // Boulder
-{lat:40.5853, lon:-105.0439, height:35}, // Fort Collins
-{lat:38.8339, lon:-104.8214, height:36}, // Colorado Springs
-
-// I-70 corridor and mountain towns
-{lat:39.7555, lon:-105.2211, height:34}, // Golden
-{lat:39.6333, lon:-105.3172, height:33}, // Evergreen
-{lat:39.7055, lon:-105.6997, height:33}, // Idaho Springs
-{lat:39.6403, lon:-105.8716, height:33}, // Dillon
-{lat:39.6466, lon:-106.0510, height:33}, // Silverthorne
-{lat:39.4817, lon:-106.0384, height:32}, // Breckenridge
-{lat:39.6403, lon:-106.3742, height:33}, // Vail
-{lat:39.5347, lon:-106.9378, height:33}, // Edwards
-{lat:39.5501, lon:-107.3248, height:35}, // Glenwood Springs
-{lat:39.1911, lon:-106.8175, height:33}, // Aspen
-{lat:39.3914, lon:-107.2112, height:32}, // Carbondale
-{lat:40.4849, lon:-106.8317, height:33}, // Steamboat Springs
-{lat:38.5347, lon:-106.1240, height:32}, // Salida
-
-// Western Slope and southwest
-{lat:39.0639, lon:-108.5506, height:35}, // Grand Junction
-{lat:38.4783, lon:-107.8762, height:34}, // Montrose
-{lat:38.0297, lon:-107.6714, height:32}, // Ridgway
-{lat:37.9375, lon:-107.8123, height:32}, // Telluride
-{lat:37.2753, lon:-107.8801, height:34}, // Durango
-{lat:37.4694, lon:-105.8797, height:32}, // Alamosa
-{lat:37.2694, lon:-106.9995, height:31}  // Pagosa Springs
-]
+const towers={
+verizon:[[39.7392,-104.9903],[39.6403,-106.3742],[39.0639,-108.5506]],
+att:[[39.7525,-104.9995],[39.5501,-107.3248],[37.2753,-107.8801]],
+tmobile:[[39.7392,-104.9903],[39.5501,-107.3248],[37.2753,-107.8801]]
 };
 
-function resolveLocation(){
-
-const zip=document.getElementById("zip").value.trim();
-
-if(zip && zipLookup[zip]){
-return zipLookup[zip];
-}
-
-const lat=parseFloat(document.getElementById("lat").value);
-const lon=parseFloat(document.getElementById("lon").value);
-
-return {lat,lon};
-
-}
-
-function haversine(lat1, lon1, lat2, lon2){
+function haversine(lat1,lon1,lat2,lon2){
 const R=3958.8;
 const dLat=(lat2-lat1)*Math.PI/180;
 const dLon=(lon2-lon1)*Math.PI/180;
-
-const a=
-Math.sin(dLat/2)**2+
-Math.cos(lat1*Math.PI/180)*
-Math.cos(lat2*Math.PI/180)*
-Math.sin(dLon/2)**2;
-
+const a=Math.sin(dLat/2)**2+Math.cos(lat1*Math.PI/180)*Math.cos(lat2*Math.PI/180)*Math.sin(dLon/2)**2;
 return R*(2*Math.atan2(Math.sqrt(a),Math.sqrt(1-a)));
 }
 
-function radioRange(height){
-const ft=height*3.28;
-return 1.23*(Math.sqrt(ft)+Math.sqrt(5));
-}
-
-function terrainPenalty(type){
-
-if(type==="flat") return 0;
-if(type==="rolling") return 2;
-if(type==="forest") return 3;
-if(type==="mountain") return 6;
-if(type==="canyon") return 8;
-
+function terrainPenalty(t){
+if(t==="rolling")return 2;
+if(t==="forest")return 3;
+if(t==="mountain")return 6;
+if(t==="canyon")return 8;
 return 0;
 }
 
 function estimate(){
 
-const loc=resolveLocation();
+let zip=document.getElementById("zip").value.trim();
 
-if(!loc || Number.isNaN(loc.lat) || Number.isNaN(loc.lon)){
-output.innerHTML="Enter ZIP or coordinates.";
+let lat,lon;
+
+if(zipLookup[zip]){
+lat=zipLookup[zip][0];
+lon=zipLookup[zip][1];
+}else{
+lat=parseFloat(lat.value);
+lon=parseFloat(lon.value);
+}
+
+if(isNaN(lat)||isNaN(lon)){
+result.style.display="block";
+result.innerHTML="Enter ZIP or coordinates.";
 return;
 }
 
-const carrier=document.getElementById("carrier").value;
-const carrierTowers=towers[carrier] || [];
+let carrier=document.getElementById("carrier").value;
 
-if(!carrierTowers.length){
-output.innerHTML="No tower samples available for that carrier yet.";
-return;
-}
+let best=999;
 
-let best=null;
-
-carrierTowers.forEach(t=>{
-let d=haversine(loc.lat,loc.lon,t.lat,t.lon);
-if(!best || d<best.distance){
-best={tower:t,distance:d};
-}
+towers[carrier].forEach(t=>{
+let d=haversine(lat,lon,t[0],t[1]);
+if(d<best)best=d;
 });
 
-let range=radioRange(best.tower.height);
-const terrain=document.getElementById("terrain").value;
-let effective=range-terrainPenalty(terrain);
+let terrain=document.getElementById("terrain").value;
+
+let range=25-terrainPenalty(terrain);
 
 let status="Unlikely";
 let color="bad";
 
-if(best.distance<effective*0.6){
-status="Likely";
-color="good";
-}
-else if(best.distance<effective){
-status="Possible";
-color="maybe";
-}
+if(best<range*.6){status="Likely";color="good"}
+else if(best<range){status="Possible";color="maybe"}
 
-const carrierName = carrier === "att" ? "AT&T" : carrier === "tmobile" ? "T-Mobile" : "Verizon";
-
-const terrainPenaltyValue = terrainPenalty(terrain);
-
-output.innerHTML = `
-<div class="small">Carrier: <strong>${carrierName}</strong></div>
+result.style.display="block";
+result.innerHTML=`
 <div class="kpis">
-  <div class="kpi"><div class="label">Nearest tower distance</div><div class="value">${best.distance.toFixed(1)} miles</div></div>
-  <div class="kpi"><div class="label">Estimated usable range</div><div class="value">${effective.toFixed(1)} miles</div></div>
-  <div class="kpi"><div class="label">Terrain adjustment</div><div class="value">−${terrainPenaltyValue.toFixed(1)} miles</div></div>
-  <div class="kpi"><div class="label">Signal estimate</div><div class="value"><span class="${color}">${status}</span></div></div>
+<div class="kpi">Nearest Tower: ${best.toFixed(1)} miles</div>
+<div class="kpi">Estimated Range: ${range.toFixed(1)} miles</div>
+<div class="kpi">Terrain Loss: −${terrainPenalty(terrain)} miles</div>
+<div class="kpi"><b class="${color}">${status}</b></div>
 </div>
-<div class="footer-note">Estimate is based on sample data for established carriers and simplified terrain assumptions.</div>
 `;
 
 }
 
 function getLocation(){
-
 navigator.geolocation.getCurrentPosition(pos=>{
-
 lat.value=pos.coords.latitude.toFixed(5);
 lon.value=pos.coords.longitude.toFixed(5);
-
 });
-
 }
 
 </script>
